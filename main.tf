@@ -6,9 +6,8 @@ data "aws_ssoadmin_instances" "ssoadmin" {}
 ############################## Users,Group,Group's Membership #########################################
 # Create SSO users
 resource "aws_identitystore_user" "aws_user" {
-  # identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
-
-  identity_store_id = module.config.environment_config_map.identity_store_id
+  identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
+  # identity_store_id = module.config.environment_config_map.identity_store_id
 
   display_name = "Girish V"
   user_name    = "girishcodealchemy"
