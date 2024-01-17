@@ -53,68 +53,84 @@ resource "aws_ssoadmin_permission_set" "permissionset" {
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
 }
 
+
 data "aws_iam_policy_document" "policy" {
-  source_json = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "ssm:StartSession"
-        ],
-        Resource = [
-          "arn:aws:ec2:*:*:instance/*",
-          "arn:aws:ssm:*:*:document/AWS-StartSSHSession",
-          "arn:aws:ssm:eu-west-1:${local.account_id}:document/SSM-SessionManagerRunShellAdminUser",
-          "arn:aws:ssm:eu-west-1::document/AWS-StartPortForwardingSession"
-        ],
-        Condition = {
-          StringEqualsIfExists = {
-            "aws:RequestTag/system" : "unstable"
-          }
-        }
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "ssm:DescribeSessions",
-          "ssm:DescribeInstanceProperties",
-          "ec2:DescribeInstances",
-          "ssm:GetConnectionStatus"
-        ],
-        Resource = [
-          "*"
-        ]
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "ssm:GetDocument"
-        ],
-        Resource = [
-          "arn:aws:ssm:*::document/SSM-SessionManagerRunShellAdminUser",
-          "arn:aws:ssm:*::document/AWS-StartPortForwardingSession"
-        ]
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "kms:*"
-        ],
-        Resource = "arn:aws:kms:eu-west-1:${local.account_id}:key/*"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "ssm:TerminateSession"
-        ],
-        Resource = [
-          "arn:aws:ssm:*:*:session/*"
-        ]
-      }
+  statement {
+    sid = "1"
+
+    actions = [
+      "s3:ListAllMyBuckets",
+      "s3:GetBucketLocation",
     ]
-  })
+
+    resources = [
+      "arn:aws:s3:::*",
+    ]
+  }
 }
+
+# data "aws_iam_policy_document" "policy" {
+#   source_json = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "ssm:StartSession"
+#         ],
+#         Resource = [
+#           "arn:aws:ec2:*:*:instance/*",
+#           "arn:aws:ssm:*:*:document/AWS-StartSSHSession",
+#           "arn:aws:ssm:eu-west-1:${local.account_id}:document/SSM-SessionManagerRunShellAdminUser",
+#           "arn:aws:ssm:eu-west-1::document/AWS-StartPortForwardingSession"
+#         ],
+#         Condition = {
+#           StringEqualsIfExists = {
+#             "aws:RequestTag/system" : "unstable"
+#           }
+#         }
+#       },
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "ssm:DescribeSessions",
+#           "ssm:DescribeInstanceProperties",
+#           "ec2:DescribeInstances",
+#           "ssm:GetConnectionStatus"
+#         ],
+#         Resource = [
+#           "*"
+#         ]
+#       },
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "ssm:GetDocument"
+#         ],
+#         Resource = [
+#           "arn:aws:ssm:*::document/SSM-SessionManagerRunShellAdminUser",
+#           "arn:aws:ssm:*::document/AWS-StartPortForwardingSession"
+#         ]
+#       },
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "kms:*"
+#         ],
+#         Resource = "arn:aws:kms:eu-west-1:${local.account_id}:key/*"
+#       },
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "ssm:TerminateSession"
+#         ],
+#         Resource = [
+#           "arn:aws:ssm:*:*:session/*"
+#         ]
+#       }
+#     ]
+#   })
+# }
 
 
 # Custom permission set Inline policy
