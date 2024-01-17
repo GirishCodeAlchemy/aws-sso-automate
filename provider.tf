@@ -1,5 +1,4 @@
 provider "aws" {
-  alias  = "root"
   region = local.region
   default_tags {
     tags = local.default_provider_tags
