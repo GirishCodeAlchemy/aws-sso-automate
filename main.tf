@@ -34,11 +34,10 @@ resource "aws_identitystore_group" "aws_group" {
 ####################### Group Membership ############################################
 # Create Group Membership for the user
 resource "aws_identitystore_group_membership" "aws_group_membership" {
-  # identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
-
-  identity_store_id = module.config.environment_config_map.identity_store_id
-  group_id          = aws_identitystore_group.aws_group.group_id
-  member_id         = aws_identitystore_user.aws_user.user_id
+  identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
+  # identity_store_id = module.config.environment_config_map.identity_store_id
+  group_id  = aws_identitystore_group.aws_group.group_id
+  member_id = aws_identitystore_user.aws_user.user_id
 }
 
 ##################### Permission Sets #######################################
