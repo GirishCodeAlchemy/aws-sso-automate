@@ -8,7 +8,7 @@ data "aws_ssoadmin_instances" "ssoadmin" {}
 # Create SSO users
 resource "aws_identitystore_user" "aws_user" {
   # identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
-  provider          = aws.root
+
   identity_store_id = module.config.environment_config_map.identity_store_id
 
   display_name = "Girish V"
@@ -37,7 +37,7 @@ resource "aws_identitystore_group" "aws_group" {
 # Create Group Membership for the user
 resource "aws_identitystore_group_membership" "aws_group_membership" {
   # identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
-  provider          = aws.root
+
   identity_store_id = module.config.environment_config_map.identity_store_id
   group_id          = aws_identitystore_group.aws_group.group_id
   member_id         = aws_identitystore_user.aws_user.user_id
@@ -47,8 +47,8 @@ resource "aws_identitystore_group_membership" "aws_group_membership" {
 
 # Create Custom Permission Set
 resource "aws_ssoadmin_permission_set" "permissionset" {
-  provider = aws.root
-  name     = "SSM-testing-permissionset"
+
+  name = "SSM-testing-permissionset"
   # instance_arn = "arn:aws:ssoadmin::${local.account_id}:instance/ssoadmin"
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
 }
