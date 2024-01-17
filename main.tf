@@ -1,5 +1,5 @@
 module "config" {
-  source = "git@github.com:GirishCodeAlchemy/terraform-config.git"
+  source = "git@github.com:GirishCodeAlchemy/alchemy-terraform-config.git"
 }
 data "aws_ssoadmin_instances" "ssoadmin" {}
 
