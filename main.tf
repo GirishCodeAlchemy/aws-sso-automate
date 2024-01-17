@@ -75,7 +75,17 @@ resource "aws_ssoadmin_permission_set_inline_policy" "inline_policy" {
 ########################## AWS Account/ Assignment ###################################
 
 # Create Account Assignment to the group with Custom permission sets
+resource "aws_ssoadmin_account_assignment" "sso_account" {
+  # instance_arn       = "arn:aws:ssoadmin::${local.account_id}:instance/ssoadmin"
+  instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
+  permission_set_arn = aws_ssoadmin_permission_set.permissionset.arn # Custom Permission set
 
+  principal_id   = aws_identitystore_group.aws_group.id # Corrected
+  principal_type = "GROUP"
+
+  target_id   = local.account_id # Sandbox Account
+  target_type = "AWS_ACCOUNT"
+}
 
 
 # module "lambda" {
