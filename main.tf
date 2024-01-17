@@ -7,7 +7,6 @@ data "aws_ssoadmin_instances" "ssoadmin" {}
 # Create SSO users
 resource "aws_identitystore_user" "aws_user" {
   identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
-  # identity_store_id = module.config.environment_config_map.identity_store_id
 
   display_name = "Girish V"
   user_name    = "girishcodealchemy"
@@ -35,9 +34,8 @@ resource "aws_identitystore_group" "aws_group" {
 # Create Group Membership for the user
 resource "aws_identitystore_group_membership" "aws_group_membership" {
   identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
-  # identity_store_id = module.config.environment_config_map.identity_store_id
-  group_id  = aws_identitystore_group.aws_group.group_id
-  member_id = aws_identitystore_user.aws_user.user_id
+  group_id          = aws_identitystore_group.aws_group.group_id
+  member_id         = aws_identitystore_user.aws_user.user_id
 }
 
 ##################### Permission Sets #######################################
@@ -45,8 +43,7 @@ resource "aws_identitystore_group_membership" "aws_group_membership" {
 # Create Custom Permission Set
 resource "aws_ssoadmin_permission_set" "permissionset" {
 
-  name = "SSM-testing-permissionset"
-  # instance_arn = "arn:aws:ssoadmin::${local.account_id}:instance/ssoadmin"
+  name         = "SSM-testing-permissionset"
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
 }
 
@@ -67,74 +64,9 @@ data "aws_iam_policy_document" "policy" {
   }
 }
 
-# data "aws_iam_policy_document" "policy" {
-#   source_json = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [
-#       {
-#         Effect = "Allow",
-#         Action = [
-#           "ssm:StartSession"
-#         ],
-#         Resource = [
-#           "arn:aws:ec2:*:*:instance/*",
-#           "arn:aws:ssm:*:*:document/AWS-StartSSHSession",
-#           "arn:aws:ssm:eu-west-1:${local.account_id}:document/SSM-SessionManagerRunShellAdminUser",
-#           "arn:aws:ssm:eu-west-1::document/AWS-StartPortForwardingSession"
-#         ],
-#         Condition = {
-#           StringEqualsIfExists = {
-#             "aws:RequestTag/system" : "unstable"
-#           }
-#         }
-#       },
-#       {
-#         Effect = "Allow",
-#         Action = [
-#           "ssm:DescribeSessions",
-#           "ssm:DescribeInstanceProperties",
-#           "ec2:DescribeInstances",
-#           "ssm:GetConnectionStatus"
-#         ],
-#         Resource = [
-#           "*"
-#         ]
-#       },
-#       {
-#         Effect = "Allow",
-#         Action = [
-#           "ssm:GetDocument"
-#         ],
-#         Resource = [
-#           "arn:aws:ssm:*::document/SSM-SessionManagerRunShellAdminUser",
-#           "arn:aws:ssm:*::document/AWS-StartPortForwardingSession"
-#         ]
-#       },
-#       {
-#         Effect = "Allow",
-#         Action = [
-#           "kms:*"
-#         ],
-#         Resource = "arn:aws:kms:eu-west-1:${local.account_id}:key/*"
-#       },
-#       {
-#         Effect = "Allow",
-#         Action = [
-#           "ssm:TerminateSession"
-#         ],
-#         Resource = [
-#           "arn:aws:ssm:*:*:session/*"
-#         ]
-#       }
-#     ]
-#   })
-# }
-
-
 # Custom permission set Inline policy
 resource "aws_ssoadmin_permission_set_inline_policy" "inline_policy" {
-  inline_policy = data.aws_iam_policy_document.policy.json
-  # instance_arn       = "arn:aws:ssoadmin::${local.account_id}:instance/ssoadmin"
+  inline_policy      = data.aws_iam_policy_document.policy.json
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.permissionset.arn
 }
@@ -142,19 +74,19 @@ resource "aws_ssoadmin_permission_set_inline_policy" "inline_policy" {
 
 ########################## AWS Account/ Assignment ###################################
 
-
 # Create Account Assignment to the group with Custom permission sets
 resource "aws_ssoadmin_account_assignment" "sso_account" {
   # instance_arn       = "arn:aws:ssoadmin::${local.account_id}:instance/ssoadmin"
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.permissionset.arn # Custom Permission set
 
-  principal_id   = aws_identitystore_group_membership.aws_group_membership.id # Corrected
+  principal_id   = aws_identitystore_group.aws_group.id # Corrected
   principal_type = "GROUP"
 
   target_id   = local.account_id # Sandbox Account
   target_type = "AWS_ACCOUNT"
 }
+
 
 # module "lambda" {
 #   source = "git@github.com:GirishCodeAlchemy/terraform-lambda-module.git"
