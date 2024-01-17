@@ -136,7 +136,6 @@ data "aws_iam_policy_document" "policy" {
 
 # Custom permission set Inline policy
 resource "aws_ssoadmin_permission_set_inline_policy" "inline_policy" {
-  provider      = aws.root
   inline_policy = data.aws_iam_policy_document.policy.json
   # instance_arn       = "arn:aws:ssoadmin::${local.account_id}:instance/ssoadmin"
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
@@ -149,7 +148,6 @@ resource "aws_ssoadmin_permission_set_inline_policy" "inline_policy" {
 
 # Create Account Assignment to the group with Custom permission sets
 resource "aws_ssoadmin_account_assignment" "sso_account" {
-  provider = aws.root
   # instance_arn       = "arn:aws:ssoadmin::${local.account_id}:instance/ssoadmin"
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.permissionset.arn # Custom Permission set
