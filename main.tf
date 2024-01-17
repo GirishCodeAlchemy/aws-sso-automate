@@ -61,6 +61,7 @@ data "aws_iam_policy_document" "policy" {
     actions = [
       "s3:ListAllMyBuckets",
       "s3:GetBucketLocation",
+      "s3:ListBucket"
     ]
 
     resources = [
