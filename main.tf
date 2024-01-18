@@ -8,8 +8,8 @@ data "aws_ssoadmin_instances" "ssoadmin" {}
 resource "aws_identitystore_user" "aws_user" {
   identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin.identity_store_ids)[0]
 
-  display_name = "GirishCodeAlchemy"
-  user_name    = "girishcodealchemy"
+  display_name = "Girish V"
+  user_name    = "girish"
 
   name {
     given_name  = "girish"
@@ -18,7 +18,7 @@ resource "aws_identitystore_user" "aws_user" {
 
   emails {
     primary = true
-    value   = "girishcodealchemy@gmail.com" # Replace with your email ID
+    value   = "vgirish.ca@gmail.com" # Replace with your email ID
   }
 }
 
