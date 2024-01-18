@@ -17,7 +17,8 @@ resource "aws_identitystore_user" "aws_user" {
   }
 
   emails {
-    value = "girishcodealchemy@gmail.com" # Replace with your email ID
+    primary = true
+    value   = "girishcodealchemy@gmail.com" # Replace with your email ID
   }
 }
 
