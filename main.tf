@@ -80,7 +80,8 @@ resource "aws_ssoadmin_account_assignment" "sso_account" {
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.permissionset.arn # Custom Permission set
 
-  principal_id   = aws_identitystore_group.aws_group.id # Corrected
+  # principal_id   = aws_identitystore_group.aws_group.id
+  principal_id   = element(split("/", aws_identitystore_group.aws_group.id), length(split("/", aws_identitystore_group.aws_group.id)) - 1) # Corrected
   principal_type = "GROUP"
 
   target_id   = local.account_id # Sandbox Account
