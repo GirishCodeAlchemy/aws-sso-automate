@@ -32,6 +32,7 @@ variable "sso_groups_configmap" {
 
 variable "sso_permissionsets_configmap" {
   type = map(object({
+    name                = string
     description         = string
     managed_policy_arns = list(string)
     inline_policy       = string
