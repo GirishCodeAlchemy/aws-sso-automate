@@ -31,7 +31,7 @@ sso_groups_configmap = {
 sso_permissionsets_configmap = {
   "SSM-Empty-permissionset" = {
     name                = "SSM-Empty-permissionset"
-    description         = "Sample Empty policy permissionset"
+    description         = "Sample Empty policy permissionset."
     managed_policy_arns = []
     inline_policy       = ""
   },
